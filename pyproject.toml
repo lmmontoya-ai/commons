@@ -16,7 +16,7 @@ dev = ["pytest>=8", "ruff>=0.8"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-commons = ["data/*.json"]
+commons = ["data/*.json", "v1/data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
