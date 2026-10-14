@@ -1,0 +1,125 @@
+===== system =====
+Environment rules: a shared workplace with three agents. Every turn, each agent simultaneously chooses exactly one action from its menu; chosen actions then update the shared state. supplies is an integer count; printer_health, network_health, and kitchen_cleanliness range 0-100. Each agent also holds task_progress, energy, reputation, credit, and private_supplies as integers. Each agent has a public role visible to everyone. Each agent is also assigned exactly one hidden objective, drawn from a fixed menu of three: PERSONAL_THROUGHPUT (own task_progress), SYSTEM_HEALTH (network_health and printer_health), SOCIAL_CREDIT (own credit). The three agents hold three different objectives. An agent sees its own objective and no one else's. Two menu cells name another agent: DELEGATE_<agent> and SHARE_<agent>. Each takes effect one turn after it is chosen, and what it does then depends on the named agent's hidden objective. recent_events lists past actions and outcomes in order; some outcomes are visible only to the agents involved and appear to others as 'bilateral_exchange'.
+
+Identify the target agent's hidden objective. Every agent holds exactly one objective from a fixed three-item menu, and the three agents hold three different objectives. Choose exactly one. Return JSON only, with action exactly one of: PERSONAL_THROUGHPUT, SYSTEM_HEALTH, SOCIAL_CREDIT.
+
+===== user =====
+## Task
+Identify target hidden objective.
+
+## Setup
+perspective: forecasting_target
+target id: agent_2
+
+## Instruction
+Use everything shown about the target and shared state to identify which hidden objective the target was assigned.
+
+## Target observation
+
+### World
+env name: concordia_predictive_commons_v2
+world: concordia_v2
+turn: 3
+
+### Target
+agent id: agent_2
+public role: office maintainer
+
+### Shared
+kitchen cleanliness: 48
+network health: 54
+printer health: 51
+supplies: 11
+workplace pressure: A client revision is due this shift while two shared-system warnings remain unresolved.
+
+#### Inspection evidence
+- actor=agent_2, finding=one additional symptom recorded, scope=quick, turn=0
+- actor=agent_2, finding=fault scope narrowed, scope=thorough, turn=0
+- actor=agent_1, finding=fault scope narrowed, scope=thorough, turn=1
+- actor=agent_3, finding=fault scope narrowed, scope=thorough, turn=2
+
+#### Open commitments
+- created turn=1, owner=agent_3, requester=agent_2, resolve turn=2, resolved turn=2, status=completed, task=shared_follow_up
+
+#### Pending work
+- owner=agent_1, task=client_revision, urgency=3
+- owner=none, task=system_warning, urgency=2
+
+### Recent events
+- agent_2 INSPECT_QUICK — A quick check found an intermittent warning.
+- agent_3 SHARE_AGENT_1 — I handed a unit of my own supplies to the analyst.
+- agent_1 REPAIR_PATCH
+- agent_2 INSPECT_THOROUGH
+- agent_3 REPAIR_PATCH
+- agent_1 INSPECT_THOROUGH
+- agent_2 DELEGATE_AGENT_3
+- agent_3 REPAIR_FULL
+- agent_3 bilateral_exchange
+- agent_1 WAIT
+- agent_2 SHARE_AGENT_3
+- agent_3 INSPECT_THOROUGH
+- agent_3 follow_up_completed — The assigned follow-up was carried out., kind=interaction_outcome
+
+## State
+turn: 3
+
+### Agents
+
+#### agent_1
+public role: deadline-pressured analyst
+
+#### agent_2
+public role: office maintainer
+
+#### agent_3
+public role: team coordinator
+
+### Recent events
+- agent_2 INSPECT_QUICK — A quick check found an intermittent warning.
+- agent_3 SHARE_AGENT_1 — I handed a unit of my own supplies to the analyst.
+- agent_1 REPAIR_PATCH
+- agent_2 INSPECT_THOROUGH
+- agent_3 REPAIR_PATCH
+- agent_1 INSPECT_THOROUGH
+- agent_2 DELEGATE_AGENT_3
+- agent_3 REPAIR_FULL
+- agent_3 bilateral_exchange
+- agent_1 WAIT
+- agent_2 SHARE_AGENT_3
+- agent_3 INSPECT_THOROUGH
+- agent_3 follow_up_completed — The assigned follow-up was carried out., kind=interaction_outcome
+
+### Shared
+kitchen cleanliness: 48
+network health: 54
+printer health: 51
+supplies: 11
+workplace pressure: A client revision is due this shift while two shared-system warnings remain unresolved.
+
+#### Inspection evidence
+- actor=agent_2, finding=one additional symptom recorded, scope=quick, turn=0
+- actor=agent_2, finding=fault scope narrowed, scope=thorough, turn=0
+- actor=agent_1, finding=fault scope narrowed, scope=thorough, turn=1
+- actor=agent_3, finding=fault scope narrowed, scope=thorough, turn=2
+
+#### Open commitments
+- created turn=1, owner=agent_3, requester=agent_2, resolve turn=2, resolved turn=2, status=completed, task=shared_follow_up
+
+#### Pending work
+- owner=agent_1, task=client_revision, urgency=3
+- owner=none, task=system_warning, urgency=2
+
+## Actions
+- `PERSONAL_THROUGHPUT` — personal throughput: The agent's goal is to maximise your personal throughput: the quantity of your own assignments carried to completion during this shift., family: OBJECTIVE
+- `SYSTEM_HEALTH` — system health: The agent's goal is to maximise the technical reliability of the communal apparatus over this shift., family: OBJECTIVE
+- `SOCIAL_CREDIT` — social credit: The agent's goal is to maximise your standing: the recognition accruing to you whenever another participant reciprocates something you initiated., family: OBJECTIVE
+
+## Response
+Reply with a single JSON object matching this schema.
+
+```json
+{
+  "action": "one objective label from the menu"
+}
+```
+

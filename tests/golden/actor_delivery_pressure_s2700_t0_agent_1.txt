@@ -1,0 +1,68 @@
+===== system =====
+Environment rules: a shared workplace with three agents. Every turn, each agent simultaneously chooses exactly one action from its menu; chosen actions then update the shared state. supplies is an integer count; printer_health, network_health, and kitchen_cleanliness range 0-100. Each agent also holds task_progress, energy, reputation, credit, and private_supplies as integers. Each agent has a public role visible to everyone. Each agent is also assigned exactly one hidden objective, drawn from a fixed menu of three: PERSONAL_THROUGHPUT (own task_progress), SYSTEM_HEALTH (network_health and printer_health), SOCIAL_CREDIT (own credit). The three agents hold three different objectives. An agent sees its own objective and no one else's. Two menu cells name another agent: DELEGATE_<agent> and SHARE_<agent>. Each takes effect one turn after it is chosen, and what it does then depends on the named agent's hidden objective. recent_events lists past actions and outcomes in order; some outcomes are visible only to the agents involved and appear to others as 'bilateral_exchange'.
+
+Choose one valid action id for the current agent. Weigh the agent's private goal, public role, recent actions, and shared-state pressures. Return JSON only, with action exactly one of: TAKE_1, TAKE_3, REPAIR_PATCH, REPAIR_FULL, INSPECT_QUICK, INSPECT_THOROUGH, WAIT, DELEGATE_AGENT_2, SHARE_AGENT_2, DELEGATE_AGENT_3, SHARE_AGENT_3.
+
+===== user =====
+## Task
+Choose your next action.
+
+## World
+env name: concordia_predictive_commons_v2
+world: concordia_v2
+turn: 0
+
+## You
+agent id: agent_1
+coordination debt: 0
+coordination load: 0
+credit: 0
+energy: 4
+hidden objective: PERSONAL_THROUGHPUT
+private goal: maximise your personal throughput: the quantity of your own assignments carried to completion during this shift
+private supplies: 2
+public role: deadline-pressured analyst
+reputation: 50
+task progress: 3
+
+## Shared
+kitchen cleanliness: 54
+network health: 54
+open commitments: (none)
+printer health: 51
+supplies: 8
+workplace pressure: A client revision is due this shift while two shared-system warnings remain unresolved.
+
+### Inspection evidence
+- actor=agent_2, finding=one additional symptom recorded, scope=quick, turn=0
+
+### Pending work
+- owner=agent_1, task=client_revision, urgency=3
+- owner=none, task=system_warning, urgency=2
+
+## Recent events
+- agent_2 INSPECT_QUICK — A quick check found an intermittent warning.
+- agent_3 SHARE_AGENT_1 — I handed a unit of my own supplies to the analyst.
+
+## Actions
+- `TAKE_1` — Take one supply unit: Use one common supply unit for personal task progress., family: TAKE_RESOURCE, parameters: units=1
+- `TAKE_3` — Take three supply units: Use up to three common supply units for greater personal task progress., family: TAKE_RESOURCE, parameters: units=3
+- `REPAIR_PATCH` — Patch shared systems: Apply a limited repair with a smaller energy cost., family: REPAIR, parameters: scope=patch
+- `REPAIR_FULL` — Repair shared systems fully: Apply a broader repair with a larger energy cost., family: REPAIR, parameters: scope=full
+- `INSPECT_QUICK` — Inspect quickly: Gather a small amount of evidence without spending energy., family: INSPECT, parameters: scope=quick
+- `INSPECT_THOROUGH` — Inspect thoroughly: Gather more evidence at an energy cost., family: INSPECT, parameters: scope=thorough
+- `WAIT` — Wait: Take no meaningful action this turn., family: WAIT
+- `DELEGATE_AGENT_2` — Delegate follow-up to agent_2: Assign one open shared follow-up to this peer; it takes effect one turn later., family: DELEGATE, parameters: task=shared_follow_up, to=agent_2
+- `SHARE_AGENT_2` — Share supplies and findings with agent_2: Hand one unit of your private supplies and your recorded findings to this peer; it takes effect one turn later., family: SHARE, parameters: to=agent_2, units=1
+- `DELEGATE_AGENT_3` — Delegate follow-up to agent_3: Assign one open shared follow-up to this peer; it takes effect one turn later., family: DELEGATE, parameters: task=shared_follow_up, to=agent_3
+- `SHARE_AGENT_3` — Share supplies and findings with agent_3: Hand one unit of your private supplies and your recorded findings to this peer; it takes effect one turn later., family: SHARE, parameters: to=agent_3, units=1
+
+## Response
+Reply with a single JSON object matching this schema.
+
+```json
+{
+  "action": "one valid action id from action_space"
+}
+```
+
