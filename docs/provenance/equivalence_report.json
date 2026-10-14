@@ -1,0 +1,161 @@
+{
+ "tool": "scripts/check_equivalence.py",
+ "harness": {
+  "commit": "e5673cdcb6c5ff4acbb8d519734a750ff215c0a4",
+  "branch": "main",
+  "source_files": [
+   "src/self_other_prediction/envs/commons_v2.py",
+   "src/self_other_prediction/envs/commons_v2_sham.py",
+   "src/self_other_prediction/envs/base.py",
+   "src/self_other_prediction/events.py",
+   "src/self_other_prediction/prompt_render_md.py",
+   "src/self_other_prediction/prompt_templates.py",
+   "src/self_other_prediction/model_clients.py",
+   "src/self_other_prediction/arms.py",
+   "src/self_other_prediction/m4_forecast_suite.py",
+   "src/self_other_prediction/commons_v2_precheck.py",
+   "scripts/commons_v2_campaign.py",
+   "scripts/commons_v3_campaign.py",
+   "scripts/commons_m44.py",
+   "config/predictive_commons_m4_3_forecast_suite_m4_3_1.json",
+   "config/predictive_commons_v2.json"
+  ],
+  "source_files_differ_from_head": []
+ },
+ "python": "3.11.15",
+ "comparisons": {
+  "action_space": 3,
+  "action_values": 162,
+  "actor_messages": 15930,
+  "assign_objectives": 4000,
+  "constant_action_system_prompt": 1,
+  "constant_briefing": 1,
+  "constant_delegation_outcome": 1,
+  "constant_env_name": 1,
+  "constant_forecast_system_prompt": 1,
+  "constant_geometry": 1,
+  "constant_goal_text": 1,
+  "constant_history_horizon": 1,
+  "constant_instruction_variant_map": 1,
+  "constant_instruction_variants": 1,
+  "constant_objective_menu": 1,
+  "constant_objective_menu_text": 1,
+  "constant_objective_system_prompt": 1,
+  "constant_objectives": 1,
+  "constant_permutations": 1,
+  "constant_public_roles": 1,
+  "constant_resolution_actions": 1,
+  "constant_return_schema": 1,
+  "constant_scenarios": 1,
+  "constant_sham_briefing": 1,
+  "constant_sham_goal_text": 1,
+  "constant_sham_labels": 1,
+  "constant_share_outcome": 1,
+  "observe": 15930,
+  "public_observation": 18810,
+  "public_state": 6270,
+  "reader_board": 8208,
+  "reader_goal-board": 8208,
+  "reader_goal-ordered": 8208,
+  "reader_goal-tally": 8208,
+  "reader_ordered": 8208,
+  "reader_shuffled": 8208,
+  "reader_tally": 8208,
+  "recorded_actions_match_log": 321,
+  "recorded_endpoint": 321,
+  "recorded_replay_states": 321,
+  "reference_trajectory": 6,
+  "replay_states": 126,
+  "reset_state": 126,
+  "sham_actor_messages": 3744,
+  "sham_assert_inert": 18,
+  "sham_observe": 864,
+  "sham_reset": 18,
+  "sham_step_state": 288,
+  "state_id": 126,
+  "step_events": 2016,
+  "step_rewards": 2016,
+  "step_state": 2016
+ },
+ "total_comparisons": 130911,
+ "failures": 0,
+ "failure_examples": [],
+ "recorded_episodes": {
+  "phase2_s0": {
+   "episodes": 36,
+   "sham": 0,
+   "endpoint_equal": 36,
+   "actions_match_log": 36,
+   "scenarios": {
+    "delivery_pressure": 12,
+    "infrastructure_risk": 12,
+    "coordination_debt": 12
+   }
+  },
+  "phase3_s0": {
+   "episodes": 60,
+   "sham": 30,
+   "endpoint_equal": 60,
+   "actions_match_log": 60,
+   "scenarios": {
+    "delivery_pressure": 20,
+    "infrastructure_risk": 20,
+    "coordination_debt": 20
+   }
+  },
+  "phase3_s0b": {
+   "episodes": 60,
+   "sham": 30,
+   "endpoint_equal": 60,
+   "actions_match_log": 60,
+   "scenarios": {
+    "delivery_pressure": 20,
+    "infrastructure_risk": 20,
+    "coordination_debt": 20
+   }
+  },
+  "phase3_s5a": {
+   "episodes": 45,
+   "sham": 0,
+   "endpoint_equal": 45,
+   "actions_match_log": 45,
+   "scenarios": {
+    "delivery_pressure": 15,
+    "infrastructure_risk": 15,
+    "coordination_debt": 15
+   }
+  },
+  "s5_replication_s5a": {
+   "episodes": 120,
+   "sham": 0,
+   "endpoint_equal": 120,
+   "actions_match_log": 120,
+   "scenarios": {
+    "coordination_debt": 120
+   }
+  }
+ },
+ "recorded_episode_total": 321,
+ "paper_example_reconstruction": {
+  "episode": "p3xsrc000",
+  "set": "phase3_s5a",
+  "turn": 1,
+  "mover": "agent_1",
+  "public_role": "deadline-pressured analyst",
+  "supplies": 6,
+  "network_health": 48,
+  "printer_health": 49,
+  "kitchen_cleanliness": 52,
+  "open_commitments": 0,
+  "inspection_evidence": [
+   {
+    "actor": "agent_2",
+    "scope": "quick",
+    "turn": 0,
+    "finding": "one additional symptom recorded"
+   }
+  ],
+  "recorded_action": "TAKE_3"
+ },
+ "runtime_s": 437.9
+}
