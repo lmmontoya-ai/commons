@@ -13,7 +13,9 @@ Full rules are in [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
 - Each turn, an agent picks 1 of 11 actions. It can take supplies, repair shared systems, inspect, wait, delegate work to a peer, or share supplies with a peer.
 - A delegation or a share takes effect one turn later. What it does then depends on the recipient's hidden objective, so public play gives clues about private goals.
 - Delegation outcomes are public. Share outcomes show in detail only to the two agents involved.
-- Shared systems get worse each turn unless agents repair them. Supplies and energy refill a little each turn. An agent's reward each turn is the change in its own objective. Three opening scenarios set the starting board.
+- Shared systems get worse each turn unless agents repair them. Supplies and energy refill a little each turn.
+- An agent's reward each turn is the change in its own objective.
+- Three opening scenarios set the starting board.
 
 ## Quick start
 
@@ -89,7 +91,8 @@ Play is deterministic apart from the seeded start. Any recorded game replays exa
 - [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md): full rules, state, actions, and runtime.
 - [docs/READER_VIEWS.md](docs/READER_VIEWS.md): actor prompts, reader views, goal naming, and sham prompts.
 - [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md): determinism, replay, log format, equivalence counts, and repository layout.
-- [docs/provenance/PROVENANCE.md](docs/provenance/PROVENANCE.md): where each module came from. [docs/provenance/equivalence_report.json](docs/provenance/equivalence_report.json): counts from the equivalence check.
+- [docs/provenance/PROVENANCE.md](docs/provenance/PROVENANCE.md): where each module came from.
+- [docs/provenance/equivalence_report.json](docs/provenance/equivalence_report.json): counts from the equivalence check.
 
 ## Known limitations
 
