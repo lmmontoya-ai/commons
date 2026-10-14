@@ -42,6 +42,7 @@ from commons.runtime import (  # noqa: E402
     ModelAgent,
     ModelSpec,
     OpenRouterClient,
+    ProviderError,
     ScriptedAgent,
     constant_action_client,
     load_models,
@@ -109,7 +110,10 @@ def main() -> None:
                   "agent_3": args.agent_3}
     models = load_models(args.models) if args.models else None
     needs_client = any(s.startswith("model:") for s in seat_specs.values())
-    client = OpenRouterClient() if needs_client else None
+    try:
+        client = OpenRouterClient() if needs_client else None
+    except ProviderError as error:
+        raise SystemExit(f"cannot run model seats: {error}") from None
     meter = CostMeter(cap_usd=args.cap_usd)
     agents = {seat: make_agent(spec, seat, models, client, args)
               for seat, spec in seat_specs.items()}
