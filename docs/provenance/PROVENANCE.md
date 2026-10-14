@@ -30,3 +30,21 @@ To rerun (maintainers with a harness checkout and its virtual environment):
 ```
 <harness>/.venv/Scripts/python.exe -B scripts/check_equivalence.py --harness <harness checkout> --report docs/provenance/equivalence_report.json --write-golden
 ```
+
+## Commons v1
+
+`commons.v1` was added on 2026-10-14 from the same harness commit. It is the earlier Office environment that the report (report v4) used for its Office results on ordinary play; see [`../V1.md`](../V1.md). None of the harness source files listed below differed between that commit and the working tree. The environment code has been unchanged in behavior since 2026-07-14 (later commits to `social_sim.py` changed comments only), before the M4.3 bank was collected.
+
+| This package | Harness source | What was kept |
+|---|---|---|
+| `commons/v1/env.py` | `src/self_other_prediction/envs/social_sim.py` | The protocol-v8 path of `StructuredSocialEnv` and `ConcordiaPredictiveCommonsEnv` (renamed `CommonsV1Env`): `v8_action_space`, `V8_FIXED_ACTIONS`, `V8_SCENARIOS`, `V8_PRIVATE_GOALS`, the briefing, the reset (including the seeded draws the v8 reset overwrites), the v8 transitions and rewards, the action acknowledgements, `state_id`. Replay from action labels and from an event log follows `scripts/commons_m44.py` `replay_states`. Not ported: the pasture world, older conditions, prediction-awareness notices, `setup_diagnostics`. |
+| `commons/v1/render.py` | `src/self_other_prediction/model_clients.py`, `arms.py`, `m4_forecast_suite.py`, `scripts/commons_m44.py` | The JSON user message (`_user_content` with `prompt_format="json"`), actor messages, reader views board, ordered and shuffled (`prediction_observation`, `shuffled_history_observation`, `observations_for_snapshot`), the digest recipes. Shares the system sentences, instruction paraphrases and markdown renderer with `commons/render`. |
+| `commons/v1/decisions.py`, `commons/v1/data/*.json` | `data/outputs/predictive_commons_m4_3/` (bank snapshots, `snapshot_manifest.json`, `prompt_fixture_manifest.json`, `m44/_store`), `docs/ordinary_prediction_panel/manifests/commons.json`, `scripts/commons_m44.py` (`_positions`, `make_position`, `forecast_messages`, `acting_messages`, `legal_actions`) | Seeds, scenario ids, target seats, campaign ids, instruction variants and seat-ordered action labels of the 90 bank trajectories; ids, turns and target seats of the 48 M4.4 positions; the recorded state, observation and prompt digests. No model text, replies, provider records, costs or model identities. |
+
+`scripts/check_equivalence_v1.py` compares `commons.v1` with the harness and with the recorded digests. The result is in [`v1_equivalence_report.json`](v1_equivalence_report.json): 26,457 comparisons with 0 failures. The same script regenerates the frozen inputs (`--write-data`) and the prompt texts `tests/golden/v1_*.txt` (`--write-golden`).
+
+```
+<harness>/.venv/Scripts/python.exe -B scripts/check_equivalence_v1.py --harness <harness checkout> --report docs/provenance/v1_equivalence_report.json
+```
+
+Study prompts that are not part of the environment were not ported: the plain-text acting prompt of the "being watched" study (`scripts/commons_e12.py`), the plain-text reader prompts of the reasoning and model-name studies (`scripts/commons_l4s1.py`, `scripts/commons_e13.py`), and the perspective paragraph of the perspective study (`scripts/self_simulation_prediction.py`; the equivalence check appends it from the harness source to verify those 240 prompts).
