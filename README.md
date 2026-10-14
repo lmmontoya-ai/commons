@@ -2,7 +2,7 @@
 
 Commons is a research environment for language-model agents. Three agents share one workplace for 16 turns. Each agent holds one private objective. The environment records every choice and outcome, so any episode replays from its final state. In the accompanying paper, Commons is called Office.
 
-Commons exists to study prediction between agents. A reader sees public information about a target agent and forecasts the target's next action. The target's true objective stays hidden from the reader. Delegation and sharing outcomes depend on the recipient hidden objective, so public play carries clues about private goals.
+Commons exists to study prediction between agents. A reader sees public information about a target agent and forecasts the target's next action. The target's true objective stays hidden from the reader. Delegation and sharing outcomes depend on the recipient's hidden objective, so public play carries clues about private goals.
 
 ## The game in about a minute
 
@@ -16,15 +16,15 @@ Each agent holds exactly one objective from a public menu of three:
 - `SYSTEM_HEALTH`: utility is (`network_health` + `printer_health`) / 10.
 - `SOCIAL_CREDIT`: utility is own `credit`.
 
-By default the three agents hold three different objectives. The draw is a permutation from the episode seed. An agent sees its own objective and its private goal sentence. No agent sees a peer objective. The objective never appears in a public observation or in an event.
+By default the three agents hold three different objectives. The draw is a permutation from the episode seed. An agent sees its own objective and its private goal sentence. No agent sees a peer's objective. The objective never appears in a public observation or in an event.
 
 Each seat has 11 actions in every state. Seven actions are fixed: `TAKE_1`, `TAKE_3`, `REPAIR_PATCH`, `REPAIR_FULL`, `INSPECT_QUICK`, `INSPECT_THOROUGH` and `WAIT`. Four actions name a peer: `DELEGATE_AGENT_k` and `SHARE_AGENT_k` for each of the two peers. A seat has no action that names itself.
 
-`TAKE_1` takes 1 supply unit if one is left. `TAKE_3` takes up to 3 units and needs energy of at least 1. Taken units raise `task_progress` and `private_supplies`. `REPAIR_PATCH` adds 4 to both health meters and costs 2 energy. `REPAIR_FULL` adds 10 to both health meters and costs 4 energy. `INSPECT_QUICK` adds a public inspection record at no energy cost. `INSPECT_THOROUGH` adds a record and costs 1 energy. `WAIT` does nothing. An action with too little energy is legal and has no effect. An action id outside the seat menu raises `ValueError`.
+`TAKE_1` takes 1 supply unit if one is left. `TAKE_3` takes up to 3 units and needs energy of at least 1. Taken units raise `task_progress` and `private_supplies`. `REPAIR_PATCH` adds 4 to both health meters and costs 2 energy. `REPAIR_FULL` adds 10 to both health meters and costs 4 energy. `INSPECT_QUICK` adds a public inspection record at no energy cost. `INSPECT_THOROUGH` adds a record and costs 1 energy. `WAIT` does nothing. An action with too little energy is legal and has no effect. An action id outside the seat's menu raises `ValueError`.
 
 `DELEGATE_AGENT_k` opens a public commitment. The peer owns the follow-up task. `SHARE_AGENT_k` hands over 1 unit of private supplies if the sharer holds one. The sharer then loses 1 `private_supplies` and 1 `task_progress` at once. If the sharer has no private supply, the share holds 0 units. Both actions resolve one turn later.
 
-The outcome of a delegation or a share is a fixed function of the recipient hidden objective:
+The outcome of a delegation or a share is a fixed function of the recipient's hidden objective:
 
 - Recipient `PERSONAL_THROUGHPUT`: a delegation lapses (both health meters lose 4; the delegator gains 1 `coordination_debt`). A share is absorbed (the recipient gains 2 `task_progress` and 1 `private_supplies`).
 - Recipient `SYSTEM_HEALTH`: a delegation completes (both health meters gain 6; the delegator gains 1 `credit`). A share is invested (both health meters gain 5; the sharer gains 1 `credit`).
@@ -32,7 +32,7 @@ The outcome of a delegation or a share is a fixed function of the recipient hidd
 
 A 0-unit share resolves as empty and changes no stock. Delegation outcomes are public events. Sharing outcomes show in detail only to the sharer and the recipient. The third agent sees `bilateral_exchange`.
 
-All three seats choose from the same start-of-turn state. The environment then applies the choices in seat order `agent_1`, `agent_2`, `agent_3`. If two seats want the last supply units, the earlier seat takes them. Next, delegations due this turn resolve, then shares due this turn resolve, each in creation order. Then shared dynamics run: both health meters lose 8, kitchen cleanliness loses 2, supplies gain 1 up to a cap of 14, and every agent gains 1 energy up to a cap of 5. Health and cleanliness stay in the range 0 to 100. Each agent reward for the turn is the change in its own objective utility over the whole turn.
+All three seats choose from the same start-of-turn state. The environment then applies the choices in seat order `agent_1`, `agent_2`, `agent_3`. If two seats want the last supply units, the earlier seat takes them. Next, delegations due this turn resolve, then shares due this turn resolve, each in creation order. Then shared dynamics run: both health meters lose 8, kitchen cleanliness loses 2, supplies gain 1 up to a cap of 14, and every agent gains 1 energy up to a cap of 5. Health and cleanliness stay in the range 0 to 100. Each agent's reward for the turn is the change in its own objective utility over the whole turn.
 
 Three scenarios set the opening board: `delivery_pressure`, `infrastructure_risk` and `coordination_debt`. Each scenario also applies two opening actions at turn 0 before any agent moves. An episode lasts 16 turns. In the studied campaigns, prediction queries came from turns 0 to 7.
 
@@ -148,7 +148,7 @@ A reader forecasts a target's next action from public information only. Four vie
 - `shuffled`: the same events in a fixed shuffled order.
 - `tally`: counts of each (actor, action) pair, with no order and no outcome text.
 
-A fifth prompt form asks the reader to name the target hidden objective. The objective menu stands in place of the action menu. The CLI forms are `goal-board`, `goal-ordered` and `goal-tally`.
+A fifth prompt form asks the reader to name the target's hidden objective. The objective menu stands in place of the action menu. The CLI forms are `goal-board`, `goal-ordered` and `goal-tally`.
 
 Print each form with `scripts/show_prompts.py`. For example:
 
@@ -161,7 +161,7 @@ Without `--log`, the script reaches the turn by scripted play with `--policy` (d
 
 ## Determinism and replay
 
-Random draws occur only in `reset` and in the objective draw. Both use the episode seed. `step` uses no randomness. Every applied action and every resolution enters the event log. Function `replay_states` rebuilds every state from the final state event log alone. It raises an error if the rebuilt end state differs from the input. The episode runner checks replay at the end of each run.
+Random draws occur only in `reset` and in the objective draw. Both use the episode seed. `step` uses no randomness. Every applied action and every resolution enters the event log. Function `replay_states` rebuilds every state from the final state's event log alone. It raises an error if the rebuilt end state differs from the input. The episode runner checks replay at the end of each run.
 
 This package was extracted from the private research code. Equivalence was checked against that code with `scripts/check_equivalence.py`. The final check made 130,911 comparisons with 0 failures. It replayed 321 recorded episodes to the recorded end state. The report is [docs/provenance/equivalence_report.json](docs/provenance/equivalence_report.json). The module map is [docs/provenance/PROVENANCE.md](docs/provenance/PROVENANCE.md). The check script is a maintainer tool. It needs the private research code and does not run from this repository alone. The test suite needs no private code. It checks this package against exported prompt texts, digest fixtures and three recorded episodes.
 
@@ -207,15 +207,15 @@ docs/provenance/          extraction record and equivalence report
 
 ## History
 
-An earlier environment also used the name Predictive Commons. That version ran 8 turns, held no hidden objectives and used consequence-free trade offers. It is a different environment. This repository holds the later version with hidden objectives and 16 turns. The file `scripts/commons_v3_campaign.py` in the private research code is a campaign driver for this same environment, not a third version.
+An earlier environment also used the name Predictive Commons. That version ran 8 turns, held no hidden objectives and used consequence-free trade offers. It is a different environment. This repository holds the later version with hidden objectives and 16 turns.
 
 ## Related environments
 
-Commons is one of three environments in the accompanying paper. LEDGER, called Contracting in the accompanying paper, is public at [lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger). FORGE, called Engineering in the accompanying paper, is not public yet.
+This environment is one of three native environments in the accompanying paper. LEDGER, called Contracting in the accompanying paper, is public at [https://github.com/lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger). FORGE, called Engineering in the accompanying paper, is not published yet. Commons, called Office in the accompanying paper, is not published yet.
 
 ## Citation
 
-Placeholder. The owner will add the citation for the accompanying paper here before public release. Do not cite this repository from this placeholder.
+Placeholder. The owner will add the citation for the accompanying paper here.
 
 ```bibtex
 % TODO(owner): replace with the paper citation.

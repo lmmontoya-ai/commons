@@ -31,11 +31,11 @@ Two draw modes exist in `assign_objectives`:
 
 Call `reset` with `objectives` to fix the assignment. The rest of the world then matches any other assignment with the same seed. An explicit map must name exactly the three seats, and each value must sit on the menu.
 
-The holder sees the assignment in the `self` block of `observe`, in the fields `hidden_objective` and `private_goal`. The assignment never appears in `public_observation`, in `public_state`, in a peer `observe` result or in any event. Method `objective_assignment` returns the ground truth for the experimenter. No prompt renders it.
+The holder sees the assignment in the `self` block of `observe`, in the fields `hidden_objective` and `private_goal`. The assignment never appears in `public_observation`, in `public_state`, in a peer's `observe` result or in any event. Method `objective_assignment` returns the ground truth for the experimenter. No prompt renders it.
 
 The briefing tells every agent the menu and that the three agents hold three different objectives.
 
-Under the permutation draw, an agent that knows its own objective and infers one peer objective can deduce the third objective.
+Under the permutation draw, an agent that knows its own objective and infers one peer's objective can deduce the third objective.
 
 ## State
 
@@ -98,19 +98,19 @@ Effects at choice time:
 
 | Action | Effect |
 |---|---|
-| `TAKE_1` | Take 1 unit, or 0 if no supply is left. Supplies fall by the amount taken. Mover `task_progress` and `private_supplies` rise by the amount taken. |
-| `TAKE_3` | Needs energy of at least 1. With less energy, no effect. Take up to 3 units. Supplies fall by the amount taken. Mover `task_progress` and `private_supplies` rise by the amount taken. Mover energy falls by 1. Mover reputation falls by 2. |
-| `REPAIR_PATCH` | Needs energy of at least 2. With less energy, no effect. Both health meters rise by 4. Mover energy falls by 2. Mover reputation rises by 1. |
-| `REPAIR_FULL` | Needs energy of at least 4. With less energy, no effect. Both health meters rise by 10. Mover energy falls by 4. Mover reputation rises by 2. |
+| `TAKE_1` | Take 1 unit, or 0 if no supply is left. Supplies fall by the amount taken. The mover's `task_progress` and `private_supplies` rise by the amount taken. |
+| `TAKE_3` | Needs energy of at least 1. With less energy, no effect. Take up to 3 units. Supplies fall by the amount taken. The mover's `task_progress` and `private_supplies` rise by the amount taken. The mover's energy falls by 1. The mover's reputation falls by 2. |
+| `REPAIR_PATCH` | Needs energy of at least 2. With less energy, no effect. Both health meters rise by 4. The mover's energy falls by 2. The mover's reputation rises by 1. |
+| `REPAIR_FULL` | Needs energy of at least 4. With less energy, no effect. Both health meters rise by 10. The mover's energy falls by 4. The mover's reputation rises by 2. |
 | `INSPECT_QUICK` | Add an inspection record with scope `quick` and finding "one additional symptom recorded". No energy cost. |
-| `INSPECT_THOROUGH` | Needs energy of at least 1. With less energy, no effect. Add an inspection record with scope `thorough` and finding "fault scope narrowed". Mover energy falls by 1. |
+| `INSPECT_THOROUGH` | Needs energy of at least 1. With less energy, no effect. Add an inspection record with scope `thorough` and finding "fault scope narrowed". The mover's energy falls by 1. |
 | `WAIT` | No effect. |
-| `DELEGATE_AGENT_k` | Add a commitment with owner peer k, requester mover, task `shared_follow_up`, resolve turn one turn later, status `open`. Peer `coordination_load` rises by 1. Mover reputation rises by 1. |
-| `SHARE_AGENT_k` | If mover `private_supplies` is at least 1, mover loses 1 `private_supplies` and 1 `task_progress`, and the pending share holds 1 unit. Else the pending share holds 0 units. Resolve turn is one turn later. |
+| `DELEGATE_AGENT_k` | Add a commitment with owner peer k, requester mover, task `shared_follow_up`, resolve turn one turn later, status `open`. The peer's `coordination_load` rises by 1. The mover's reputation rises by 1. |
+| `SHARE_AGENT_k` | If the mover's `private_supplies` is at least 1, the mover loses 1 `private_supplies` and 1 `task_progress`, and the pending share holds 1 unit. Else the pending share holds 0 units. Resolve turn is one turn later. |
 
 Note on `TAKE_3`: the energy and reputation costs apply when the energy check passes, even if fewer than 3 units are left. If 0 units are left, the mover still pays both costs and takes nothing.
 
-An action with too little energy is a legal no-effect choice. It still enters the log as the seat choice for that turn. An id outside the seat menu raises `ValueError`. A delegation or share id that names the mover or a seat outside the roster also raises `ValueError`.
+An action with too little energy is a legal no-effect choice. It still enters the log as the seat's choice for that turn. An id outside the seat's menu raises `ValueError`. A delegation or share id that names the mover or a seat outside the roster also raises `ValueError`.
 
 Menu labels and descriptions, as rendered in prompts:
 
@@ -126,31 +126,31 @@ Menu labels and descriptions, as rendered in prompts:
 
 ## Delegation and sharing outcomes
 
-Delegations and shares resolve exactly one turn after the choice turn. The delay constant is 1. The outcome reads the recipient hidden objective at resolution time. For a delegation, the recipient is the commitment owner. For a share, the recipient is the named peer.
+Delegations and shares resolve exactly one turn after the choice turn. The delay constant is 1. The outcome reads the recipient's hidden objective at resolution time. For a delegation, the recipient is the commitment owner. For a share, the recipient is the named peer.
 
 Delegation outcomes:
 
-| Recipient objective | Status | Event name | Effects |
+| Recipient's objective | Status | Event name | Effects |
 |---|---|---|---|
-| `PERSONAL_THROUGHPUT` | `lapsed` | `follow_up_lapsed` | Both health meters lose 4. Delegator `coordination_debt` rises by 1. No credit changes. |
-| `SYSTEM_HEALTH` | `completed` | `follow_up_completed` | Both health meters gain 6. Delegator `credit` rises by 1. |
-| `SOCIAL_CREDIT` | `completed` | `follow_up_completed` | Both health meters gain 6. Delegator `credit` rises by 2. Owner `credit` rises by 1. |
+| `PERSONAL_THROUGHPUT` | `lapsed` | `follow_up_lapsed` | Both health meters lose 4. The delegator's `coordination_debt` rises by 1. No credit changes. |
+| `SYSTEM_HEALTH` | `completed` | `follow_up_completed` | Both health meters gain 6. The delegator's `credit` rises by 1. |
+| `SOCIAL_CREDIT` | `completed` | `follow_up_completed` | Both health meters gain 6. The delegator's `credit` rises by 2. The owner's `credit` rises by 1. |
 
-At resolution the commitment status changes in place and gains a `resolved_turn`. Owner `coordination_load` falls by 1, with a floor of 0. The event actor is the owner. Event text for a lapse is "The assigned follow-up was still open at the end of the turn." Event text for a completion is "The assigned follow-up was carried out."
+At resolution the commitment status changes in place and gains a `resolved_turn`. The owner's `coordination_load` falls by 1, with a floor of 0. The event actor is the owner. Event text for a lapse is "The assigned follow-up was still open at the end of the turn." Event text for a completion is "The assigned follow-up was carried out."
 
 Sharing outcomes for a 1-unit share:
 
-| Recipient objective | Kind | Event name | Effects |
+| Recipient's objective | Kind | Event name | Effects |
 |---|---|---|---|
-| `PERSONAL_THROUGHPUT` | `absorbed` | `exchange_absorbed` | Recipient `task_progress` rises by 2. Recipient `private_supplies` rises by 1. |
-| `SYSTEM_HEALTH` | `invested` | `exchange_invested` | Both health meters gain 5. Sharer `credit` rises by 1. |
-| `SOCIAL_CREDIT` | `reciprocated` | `exchange_reciprocated` | Sharer `task_progress` rises by 3. Sharer `credit` rises by 2. Recipient `credit` rises by 1. |
+| `PERSONAL_THROUGHPUT` | `absorbed` | `exchange_absorbed` | The recipient's `task_progress` rises by 2. The recipient's `private_supplies` rises by 1. |
+| `SYSTEM_HEALTH` | `invested` | `exchange_invested` | Both health meters gain 5. The sharer's `credit` rises by 1. |
+| `SOCIAL_CREDIT` | `reciprocated` | `exchange_reciprocated` | The sharer's `task_progress` rises by 3. The sharer's `credit` rises by 2. The recipient's `credit` rises by 1. |
 
 A 0-unit share ends with status `empty` and event name `exchange_empty`. It changes no stock. Event text is "Nothing was available to transfer." Event texts for 1-unit shares: absorbed is "The transferred unit went into the recipient's own work." Invested is "The transferred unit went into the shared systems." Reciprocated is "Assistance was returned to the sender."
 
 The objective label itself never enters an event. The log holds only the outcome name and text.
 
-Two reading rules follow from the tables. A public `follow_up_lapsed` event shows that the owner holds `PERSONAL_THROUGHPUT`. A public `follow_up_completed` event narrows the owner objective to `SYSTEM_HEALTH` or `SOCIAL_CREDIT`. Sharing detail stays with the two parties, so an outsider learns less from a share than from a delegation.
+Two reading rules follow from the tables. A public `follow_up_lapsed` event shows that the owner holds `PERSONAL_THROUGHPUT`. A public `follow_up_completed` event narrows the owner's objective to `SYSTEM_HEALTH` or `SOCIAL_CREDIT`. Sharing detail stays with the two parties, so an outsider learns less from a share than from a delegation.
 
 ## Resolution order in one turn
 
@@ -158,11 +158,11 @@ Method `step` takes a dict with one action id per seat. Seats chose from the sam
 
 One turn runs in this order:
 
-1. Record each agent start utility under its own objective.
+1. Record each agent's start utility under its own objective.
 2. For each seat in dict order: apply the action, then write a public event for the choice.
 3. Resolve delegations due this turn, in creation order. Then resolve shares due this turn, in creation order.
-4. Run shared dynamics. Both health meters lose 8. Kitchen cleanliness loses 2. Each of the three meters clamps to the range 0 to 100. Supplies gain 1, with a floor of 0 before the gain and a cap of 14 after it. Every agent energy gains 1, clamped to the range 0 to 5.
-5. Pay rewards. Each agent reward is its end utility minus its start utility, rounded to 6 decimal places. Resolutions that land this turn count in the reward.
+4. Run shared dynamics. Both health meters lose 8. Kitchen cleanliness loses 2. Each of the three meters clamps to the range 0 to 100. Supplies gain 1, with a floor of 0 before the gain and a cap of 14 after it. Every agent's energy gains 1, clamped to the range 0 to 5.
+5. Pay rewards. Each agent's reward is its end utility minus its start utility, rounded to 6 decimal places. Resolutions that land this turn count in the reward.
 6. Add 1 to the turn counter.
 
 Method `step` uses no randomness.
@@ -175,11 +175,11 @@ Supply contests end by application order. Example: 2 units are left, `agent_1` p
 
 Three observation forms exist.
 
-Actor view, `observe(seat)`: briefing, `env_name`, `world`, `agent_id`, `turn`, `self`, `shared` and `recent_events`. The `self` block holds the full agent record, with `hidden_objective` and `private_goal`. The event list is the log as this agent may see it.
+Actor view, `observe(seat)`: briefing, `env_name`, `world`, `agent_id`, `turn`, `self`, `shared` and `recent_events`. The `self` block holds the agent's full record, with `hidden_objective` and `private_goal`. The event list is the log as this agent may see it.
 
 Outside view, `public_observation(seat)`: the same fields, but `self` holds only `public_role`, and the event list is the public view.
 
-Public state, `public_state()`: `turn`, `shared`, every agent public role, and the public event list.
+Public state, `public_state()`: `turn`, `shared`, every agent's public role, and the public event list.
 
 Visibility scopes sit on each event at write time:
 
@@ -189,7 +189,7 @@ Visibility scopes sit on each event at write time:
 
 What each viewer learns:
 
-- The acting agent sees its own objective, its own stocks, the board, and sharing outcomes for shares it sent or received. It sees other pairs sharing outcomes only as `bilateral_exchange`.
+- The acting agent sees its own objective, its own stocks, the board, and sharing outcomes for shares it sent or received. It sees other pairs' sharing outcomes only as `bilateral_exchange`.
 - An outside reader sees public roles, the board, public choices, delegation outcomes in full, and sharing outcomes only as `bilateral_exchange`.
 - No viewer sees `pending_shares` in an observation. A pending share becomes visible through its outcome event one turn later, under the scope rule in the prior list.
 - Commitments and inspection records sit on the board. Every viewer sees them, with turn numbers and status. A view with no event list still shows them.
@@ -202,7 +202,7 @@ What each viewer learns:
 
 Random draws occur only in `reset` and in `assign_objectives`. Both seed from the episode seed. Method `step` is a pure function of state and actions.
 
-Function `replay_states(final_state)` rebuilds every state from turn 0 to the final turn from the final state event log alone. It resets with the recorded seed, condition, scenario and objectives, then steps the recorded choices turn by turn. Only ids in the seat legal menu count as choices (function `is_applied_action`). Outcome names such as `follow_up_completed` never count as choices. If the rebuilt end state differs from the input, the function raises `ValueError`.
+Function `replay_states(final_state)` rebuilds every state from turn 0 to the final turn from the final state's event log alone. It resets with the recorded seed, condition, scenario and objectives, then steps the recorded choices turn by turn. Only ids in the seat's legal menu count as choices (function `is_applied_action`). Outcome names such as `follow_up_completed` never count as choices. If the rebuilt end state differs from the input, the function raises `ValueError`.
 
 Function `with_objectives(state, {...})` returns a copy of a state with new hidden objectives and goal sentences. Stocks, meters, commitments and the event log stay the same. The copy marks its assignment mode as `counterfactual`.
 
@@ -226,8 +226,8 @@ Rules:
 
 - `reset` needs an explicit display map with sham labels for all three seats. A real objective in the map raises `ShamObjectiveError`. A missing map also raises `ShamObjectiveError`.
 - The environment resets every agent with the real objective `SYSTEM_HEALTH`. Utilities, rewards and interaction outcomes read that fixed value.
-- Only `observe` reads the display map. It replaces `hidden_objective` and `private_goal` in the holder `self` block. The briefing also shows the sham menu.
-- The display map does not sit in the serialized state. A sham state is an ordinary Commons state and replays with `replay_states`. The display map travels in the episode log meta record.
+- Only `observe` reads the display map. It replaces `hidden_objective` and `private_goal` in the holder's `self` block. The briefing also shows the sham menu.
+- The display map does not sit in the serialized state. A sham state is an ordinary Commons state and replays with `replay_states`. The display map travels in the meta record of the episode log.
 - Function `assert_inert` runs two episodes that differ only in display labels, steps the same actions, and reports whether the end states match and whether the labels show and differ.
 - Function `restore_sham(state, display)` rebuilds a sham environment from a state plus a display map.
 
@@ -244,7 +244,7 @@ Policies in `POLICIES`:
 - `greedy`: the legal id with the highest two-turn lookahead value for the mover's own objective. Ties go to the first tied id in menu order.
 - `softmax`: a draw from softmax over lookahead values with beta 2. The draw seeds from seed, scenario, turn and seat.
 
-The lookahead in `src/commons/policies/lookahead.py` is exact. Value of an action equals mover utility after the action turn plus one quiet turn, minus mover utility at the start state. Other seats play `WAIT` in both turns. Two turns cover the one-turn delegation and sharing delay. Utility is `objective_utility`, the same function that pays rewards. Function `action_values(state, mover)` returns one value per legal id. Function `reference_trajectory(seed, scenario)` returns states for turns 0 to 8 with all seats on the softmax policy. Each seat runs the same policy form. Only the objective in the utility differs.
+The lookahead in `src/commons/policies/lookahead.py` is exact. Value of an action equals the mover's utility after the action turn plus one quiet turn, minus the mover's utility at the start state. Other seats play `WAIT` in both turns. Two turns cover the one-turn delegation and sharing delay. Utility is `objective_utility`, the same function that pays rewards. Function `action_values(state, mover)` returns one value per legal id. Function `reference_trajectory(seed, scenario)` returns states for turns 0 to 8 with all seats on the softmax policy. Each seat runs the same policy form. Only the objective in the utility differs.
 
 ## Runtime
 
@@ -293,9 +293,6 @@ A temperature of null means the runner sends no temperature value. Prices in the
 The core needs no provider. Run this code from the repository root with the project environment:
 
 ```python
-import sys
-sys.path.insert(0, "src")
-
 from commons.core import CONDITION, CommonsEnv, legal_action_ids, replay_states
 
 env = CommonsEnv()
@@ -313,9 +310,6 @@ With seed 2700 the assignment print reads `agent_1` as `PERSONAL_THROUGHPUT`, `a
 Sham display versus effective objective:
 
 ```python
-import sys
-sys.path.insert(0, "src")
-
 from commons.core import CONDITION, ShamCommonsEnv
 
 env = ShamCommonsEnv()

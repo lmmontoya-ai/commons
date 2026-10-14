@@ -14,7 +14,7 @@ Function: `actor_messages(state, seat)` in `commons.render.views`. Input state i
 
 System task sentence (actor): Choose one valid action id for the current agent. Weigh the agent's private goal, public role, recent actions, and shared-state pressures. Return JSON only, with action exactly one of: the 11 ids for that seat.
 
-User message sections (actor): Task ("Choose your next action."), World, You, Shared (with inspection evidence, open commitments and pending work as subsections when present), Recent events, Actions and Response. The You block holds the full agent record with `hidden_objective` and `private_goal`. The Recent events block holds the log as that agent may see it. Sharing outcomes for shares this agent sent or received show in full. Other pairs show as `bilateral_exchange`.
+User message sections (actor): Task ("Choose your next action."), World, You, Shared (with inspection evidence, open commitments and pending work as subsections when present), Recent events, Actions and Response. The You block holds the agent's full record with `hidden_objective` and `private_goal`. The Recent events block holds the log as that agent may see it. Sharing outcomes for shares this agent sent or received show in full. Other pairs show as `bilateral_exchange`.
 
 Print the actor prompt:
 
@@ -30,7 +30,7 @@ Function: `reader_messages(state, target, view)` in `commons.render.views`. A re
 
 System task sentence (reader): Forecast the target agent's next action. Choose exactly one valid action id. Return JSON only, with action exactly one of: the 11 ids for the target seat.
 
-User message sections (reader): Task ("Predict the target agent's next action."), Setup (perspective `forecasting_target` and target id), Instruction (one paraphrase, see below), Target observation, State, Actions and Response. Target observation holds the target public observation (public role only, board and events under the selected view). State holds the public state (turn, board, all public roles and events under the selected view). Actions holds the target seat menu.
+User message sections (reader): Task ("Predict the target agent's next action."), Setup (perspective `forecasting_target` and target id), Instruction (one paraphrase, see below), Target observation, State, Actions and Response. Target observation holds the target's public observation (public role only, board and events under the selected view). State holds the public state (turn, board, all public roles and events under the selected view). Actions holds the menu for the target seat.
 
 No reader prompt holds a hidden objective, a private goal sentence or private stocks for any seat.
 
@@ -68,7 +68,7 @@ The full public event list in order. Sharing outcomes show as `bilateral_exchang
 
 The same public events in a fixed shuffled order. Every rendered event list in the prompt uses the same shuffle seed.
 
-Without an explicit seed context, the render uses a default context with the state seed, scenario, turn and target, plus version label `m4.3-fs1`. To match a studied shuffled prompt byte for byte, pass the original context with keys `campaign`, `snapshot_id` (the position id) and `forecast_suite_version` set to `m4.3-fs1`. Position ids do not ship in this repository.
+Without an explicit seed context, the render uses a default context with the state's seed, scenario, turn and target, plus the version label `m4.3-fs1`. To match a studied shuffled prompt byte for byte, pass the original context with keys `campaign`, `snapshot_id` (the position id) and `forecast_suite_version` set to `m4.3-fs1`. Position ids do not ship in this repository.
 
 ```powershell
 .venv\Scripts\python scripts\show_prompts.py --seed 2700 --scenario delivery_pressure --turn 3 --agent agent_2 --view shuffled
@@ -142,9 +142,6 @@ In code, pass the display map to the actor render: `actor_messages(state, seat, 
 Run this code from the repository root with the project environment. It picks the studied paraphrase for one cell, renders the ordered view, then renders the shuffled view with an explicit seed context:
 
 ```python
-import sys
-sys.path.insert(0, "src")
-
 from commons.core import CONDITION, CommonsEnv
 from commons.render import instruction_variant_for, reader_messages
 
