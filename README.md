@@ -91,6 +91,7 @@ Play is deterministic apart from the seeded start. Any recorded game replays exa
 - [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md): full rules, state, actions, and runtime.
 - [docs/READER_VIEWS.md](docs/READER_VIEWS.md): actor prompts, reader views, goal naming, and sham prompts.
 - [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md): determinism, replay, log format, equivalence counts, and repository layout.
+- [docs/V1.md](docs/V1.md): Commons v1, the earlier version behind the ordinary-play results of the report (report v4).
 - [docs/provenance/PROVENANCE.md](docs/provenance/PROVENANCE.md): where each module came from.
 - [docs/provenance/equivalence_report.json](docs/provenance/equivalence_report.json): counts from the equivalence check.
 
