@@ -1,8 +1,7 @@
 """Commons: a three-agent shared-workplace environment for language-model
 agents, with hidden objectives and a belief-dependent interaction channel.
 
-Called "Office" in the paper "Predicting Language-Model Agents from
-Behavioral Evidence".
+Called "Office" in the accompanying paper.
 
 Subpackages:
 
