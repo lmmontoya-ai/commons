@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the report in preferred-citation."
+type: software
+title: "Commons"
+authors:
+  - family-names: Montoya
+    given-names: Luis M.
+license: MIT
+repository-code: "https://github.com/lmmontoya-ai/commons"
+preferred-citation:
+  type: report
+  title: "When can language models predict each other? Forecasting another agent's next action in three interactive settings"
+  authors:
+    - family-names: Montoya
+      given-names: Luis M.
+  institution:
+    name: "Pivotal Research Fellowship"
+  year: 2026
+  month: 9
+  date-published: 2026-09-03
+  version: "4"
+  url: "https://luismmontoya.dev/r/self-other-prediction-sep26/v4/"

@@ -1,8 +1,8 @@
 # Commons actor prompts and reader views
 
-This page states how to render each prompt form in Commons. World rules are in [ENVIRONMENT.md](ENVIRONMENT.md). Install steps and run commands are in the [README](../README.md). Code is in `src/commons/render` (`markdown.py`, `messages.py`, `views.py`).
+This page states how to render each prompt form in Commons v2. World rules are in [ENVIRONMENT.md](ENVIRONMENT.md). Install steps and run commands are in the [README](../README.md). Code is in `src/commons/render` (`markdown.py`, `messages.py`, `views.py`). Commons v1 used JSON prompts. Its prompt forms are in [V1.md](V1.md).
 
-Every studied Commons prompt used the markdown user-message format. Every actor and reader call asked for one JSON object with the return schema `{"action": "one valid action id from action_space"}`. Goal-naming calls used the schema `{"action": "one objective label from the menu"}`.
+Every studied Commons v2 prompt used the markdown user-message format. Every actor and reader call asked for one JSON object with the return schema `{"action": "one valid action id from action_space"}`. Goal-naming calls used the schema `{"action": "one objective label from the menu"}`.
 
 Each call has two messages. The system message holds the environment briefing, a blank line and one task sentence with menu ids filled in. The user message holds the observation in markdown sections, the menu and the return schema. The briefing appears once, in the system message.
 

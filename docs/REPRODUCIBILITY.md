@@ -32,11 +32,13 @@ Run the full model path at zero cost with the offline fake model:
 
 Expected result: replay verified, with `invalid decisions: 0` and $0.0000 over 48 calls.
 
-Model names such as `luna`, `grok45` and `sonnet5` are labels in `models.json`. See [models.example.json](../models.example.json) for the five actor models and the request settings recorded for the accompanying paper. Prices in that file date from August 2026 and drive the cost cap. Check current pricing before a run.
+Model names such as `luna`, `grok45` and `sonnet5` are labels in `models.json`. See [models.example.json](../models.example.json) for the five actor models and the request settings recorded for the report. Prices in that file date from August 2026 and drive the cost cap. Check current pricing before a run.
 
 ## Provenance and equivalence counts
 
 This package was extracted from the private research code. Equivalence was checked against that code with `scripts/check_equivalence.py`. The final check made 130,911 comparisons with 0 failures. It replayed 321 recorded episodes to the recorded end state. The report is [provenance/equivalence_report.json](provenance/equivalence_report.json). The module map is [provenance/PROVENANCE.md](provenance/PROVENANCE.md). The check script is a maintainer tool. It needs the private research code and does not run from this repository alone. The test suite needs no private code. It checks this package against exported prompt texts, digest fixtures and three recorded episodes.
+
+Commons v1 has its own maintainer check, `scripts/check_equivalence_v1.py`. Its result is in [provenance/v1_equivalence_report.json](provenance/v1_equivalence_report.json): 26,457 comparisons with 0 failures. Script `scripts/show_v1_prompt.py` prints any frozen v1 prompt and checks it against the recorded digest. See [V1.md](V1.md).
 
 ## Reader views in brief
 
@@ -91,27 +93,31 @@ Three scenarios set the opening board: `delivery_pressure`, `infrastructure_risk
 pyproject.toml            Python 3.11 or later, no runtime dependencies
 models.example.json       example model registry (copy to models.json)
 scripts/run_episode.py    run one episode (scripted, fake or model seats)
-scripts/show_prompts.py   print one actor, reader or goal-naming prompt
+scripts/show_prompts.py   print one v2 actor, reader or goal-naming prompt
+scripts/show_v1_prompt.py print one frozen Commons v1 prompt
 scripts/check_equivalence.py  maintainer tool, needs the private research code
-src/commons/core          world: state, actions, resolution, sham, replay
+scripts/check_equivalence_v1.py  maintainer tool for Commons v1
+src/commons/core          v2 world: state, actions, resolution, sham, replay
+src/commons/v1            Commons v1 world, JSON prompts, frozen decisions
 src/commons/render        actor and reader prompt rendering
 src/commons/data          frozen reader instruction variant map (108 cells)
 src/commons/policies      scripted seats and the two-turn lookahead
 src/commons/runtime       provider client, agents, episode runner, logs
 tests/                    test suite, golden prompts, recorded episodes
-docs/ENVIRONMENT.md       full environment rules
-docs/READER_VIEWS.md      actor prompts and reader views
-docs/provenance/          extraction record and equivalence report
+docs/ENVIRONMENT.md       full Commons v2 rules
+docs/READER_VIEWS.md      v2 actor prompts and reader views
+docs/V1.md                Commons v1 rules, prompts and frozen decisions
+docs/provenance/          extraction record and equivalence reports
 ```
 
 ## Limitations and history held here
 
 The [README](../README.md) lists the limitations a new user hits first. The full record also includes:
 
-- Parts of the study do not ship here: campaign drivers, forecast collection, peer-objective disclosure, transfer demonstrations, reasoning-trace reader views, probability-interface prompts, scoring and paper analysis.
+- Parts of the study do not ship here: campaign drivers, forecast collection, peer-objective disclosure, transfer demonstrations, reasoning-trace reader views, probability-interface prompts, scoring and study analysis.
 - Application order settles supply contests. Choices apply in seat order, with `agent_1` first.
 - The board keeps dated commitments and inspection records. The `board` view removes the event list but not every clue about goals. A lapsed delegation shows that the recipient holds `PERSONAL_THROUGHPUT`.
 - Prompts keep the historical world labels and the studied separator character (em dash, U+2014) in event and action lines.
 - Conditions with `target_knows_predicted` in the name raise an error. This release does not render the extra notice those conditions used.
 
-An earlier environment also used the name Predictive Commons. That version ran 8 turns, held no hidden objectives and used consequence-free trade offers. It is a different environment. This repository holds the later version with hidden objectives and 16 turns.
+An earlier environment also used the name Predictive Commons. That version is Commons v1 in `commons.v1`. It ran 8 turns, held no hidden objectives and used trade offers that never resolve. This repository holds both versions. Commons v2 in `commons.core` has hidden objectives and 16 turns. See [V1.md](V1.md).

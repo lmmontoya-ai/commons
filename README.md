@@ -1,6 +1,6 @@
 # Commons
 
-Commons is a research environment for language-model agents. Three agents share one workplace for 16 turns, and each agent holds one private objective. You can use it to study whether one agent can predict what another agent will do next from public play. In the accompanying paper, Commons is called Office.
+Commons is a research environment for language-model agents. Three agents share one workplace for 16 turns, and each agent holds one private objective. You can use it to study whether one agent can predict what another agent will do next from public play. In the report (report v4, 3 September 2026), Commons is called Office.
 
 ## How the game works
 
@@ -30,7 +30,7 @@ python -m venv .venv
 .venv\Scripts\python -m ruff check src scripts tests
 ```
 
-The clone makes a folder named `commons`. The next lines make a `.venv` folder for this project and install Commons and the test tools into it. The test line reports 114 passed, and the ruff line reports no errors. On Linux or macOS, use `.venv/bin/python` in place of `.venv\Scripts\python`. Run a free scripted game with the next command.
+The clone makes a folder named `commons`. The next lines make a `.venv` folder for this project and install Commons and the test tools into it. The test line reports 161 passed, and the ruff line reports no errors. On Linux or macOS, use `.venv/bin/python` in place of `.venv\Scripts\python`. Run a free scripted game with the next command.
 
 ```powershell
 .venv\Scripts\python scripts\run_episode.py --seed 2700 --scenario delivery_pressure --agent-1 scripted:greedy --agent-2 scripted:softmax --agent-3 scripted:uniform --out data\runs\smoke --episode-id smoke
@@ -70,9 +70,9 @@ energy: 4
 hidden objective: PERSONAL_THROUGHPUT
 ```
 
-## Use in the accompanying paper
+## Use in the report
 
-The paper used the active objectives above as the main form. A reader saw public information only and forecast the target's next action, or named the target's hidden objective. As a control, the sham variant shows style labels with no payoff effect in place of real objectives. Full usage for reader views and the sham arm is in [docs/READER_VIEWS.md](docs/READER_VIEWS.md).
+The report used the active objectives above (Commons v2) for its Office private-goal studies. A reader saw public information only and forecast the target's next action, or named the target's hidden objective. As a control, the sham variant shows style labels with no payoff effect in place of real objectives. Full usage for reader views and the sham arm is in [docs/READER_VIEWS.md](docs/READER_VIEWS.md). The report used the earlier Commons v1 for ordinary play. See the next section.
 
 Run the sham control at no cost:
 
@@ -81,6 +81,18 @@ Run the sham control at no cost:
 ```
 
 Expect `episode sham (sham arm), 16 turns, replay verified: True`.
+
+## Versions used in the report
+
+The git tag `report-v4` marks the code that reproduces the environments used in report v4. Older names that contain the word "paper" refer to the same study runs.
+
+| Report result (Office) | Version in this repository | Module or flag |
+|---|---|---|
+| Ordinary play | Commons v1 | Package `commons.v1`. Script `scripts/show_v1_prompt.py` prints a frozen prompt. |
+| Private goals | Commons v2 | Default game in `commons.core`. Runner `scripts/run_episode.py`. |
+| Matched label | Commons v2 sham arm | Class `ShamCommonsEnv` in `commons.core`. Runner flag `--sham`. |
+
+Details and the exact figures are in [docs/V1.md](docs/V1.md).
 
 ## Reproducibility
 
@@ -105,20 +117,28 @@ Play is deterministic apart from the seeded start. Any recorded game replays exa
 
 ## Related environments
 
-All three native environments in the accompanying paper are public:
+All three native environments in the report are public:
 
-- LEDGER, called Contracting in the accompanying paper: [https://github.com/lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger).
-- FORGE, called Engineering in the accompanying paper: [https://github.com/lmmontoya-ai/forge](https://github.com/lmmontoya-ai/forge).
-- Commons, called Office in the accompanying paper: [https://github.com/lmmontoya-ai/commons](https://github.com/lmmontoya-ai/commons).
+- LEDGER, called Contracting in the report: [https://github.com/lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger).
+- FORGE, called Engineering in the report: [https://github.com/lmmontoya-ai/forge](https://github.com/lmmontoya-ai/forge).
+- Commons, called Office in the report: [https://github.com/lmmontoya-ai/commons](https://github.com/lmmontoya-ai/commons).
 
 ## Citation
 
-Placeholder. The owner will add the citation for the accompanying paper here.
+If you use this environment, please cite the report.
 
 ```bibtex
-% TODO(owner): replace with the paper citation.
+@techreport{montoya2026predict,
+  author      = {Luis M. Montoya},
+  title       = {When can language models predict each other? Forecasting another agent's next action in three interactive settings},
+  institution = {Pivotal Research Fellowship},
+  type        = {Final report, version 4},
+  year        = {2026},
+  month       = sep,
+  url         = {https://luismmontoya.dev/r/self-other-prediction-sep26/v4/}
+}
 ```
 
 ## License
 
-Not yet chosen. The owner will add a LICENSE file.
+MIT. See LICENSE.

@@ -1,6 +1,6 @@
 # Provenance
 
-This package was extracted on 2026-10-14 from the private research harness used for the paper (repository `self-other-prediction-smoke-tests`, branch `main`, commit `e5673cdcb6c5ff4acbb8d519734a750ff215c0a4`). None of the harness source files listed below differed between that commit and the working tree at extraction time.
+This package was extracted on 2026-10-14 from the private research harness used for the study behind the report (repository `self-other-prediction-smoke-tests`, branch `main`, commit `e5673cdcb6c5ff4acbb8d519734a750ff215c0a4`). None of the harness source files listed below differed between that commit and the working tree at extraction time.
 
 ## Module map
 

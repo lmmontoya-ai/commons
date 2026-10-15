@@ -1,8 +1,8 @@
 # Commons environment
 
-This page states the full rules of Commons. Start with the [README](../README.md) for install steps and run commands. Prompt forms are in [READER_VIEWS.md](READER_VIEWS.md). Code for the world is in `src/commons/core/env.py` (class `CommonsEnv`) and `src/commons/core/sham.py` (class `ShamCommonsEnv`).
+This page states the full rules of Commons v2. Start with the [README](../README.md) for install steps and run commands. Prompt forms are in [READER_VIEWS.md](READER_VIEWS.md). Code for the world is in `src/commons/core/env.py` (class `CommonsEnv`) and `src/commons/core/sham.py` (class `ShamCommonsEnv`). The earlier Commons v1 is in [V1.md](V1.md).
 
-Commons is called Office in the accompanying paper. Prompt labels keep the historical values `concordia_predictive_commons_v2` and `concordia_v2`. The environment does not import or use Concordia.
+Commons is called Office in the report. Prompt labels keep the historical values `concordia_predictive_commons_v2` and `concordia_v2`. The environment does not import or use Concordia.
 
 ## Seats and roles
 
@@ -337,7 +337,7 @@ The stored report at [provenance/equivalence_report.json](provenance/equivalence
 - Lookahead: 6 reference trajectories and 162 action value results. All equal.
 - Recorded episodes: 321 in total (36, 60, 60, 45 and 120 across five sets; 60 of the 321 are sham episodes). Each episode replays to its recorded end state in both code bases. Recorded action logs match replay moves. Actor and reader prompts match at every turn.
 
-The test suite holds 114 tests and needs no network and no private code:
+The test suite holds 161 tests and needs no network and no private code. The first 114 tests cover Commons v2:
 
 - `tests/test_env.py` (36 tests): menu, assignment, hiddenness, outcome tables, seat order, determinism, replay and state invariants.
 - `tests/test_sham.py` (6 tests): sham labels, inertness, sham prompts and sham replay.
@@ -346,9 +346,10 @@ The test suite holds 114 tests and needs no network and no private code:
 - `tests/test_recorded_episodes.py` (13 tests): 3 recorded episodes (replay end state, action logs, prompt digests and one archived board).
 - `tests/test_policies.py` (9 tests): lookahead, scripted policies and the reference trajectory.
 - `tests/test_runtime.py` (25 tests): request body, retries with a test transport, cost cap, parsers, agents, episodes, abandonment, sham episodes, policy sampling and the two run scripts.
+- `tests/test_v1_env.py` (23 tests), `tests/test_v1_render.py` (14 tests) and `tests/test_v1_decisions.py` (10 tests): Commons v1 mechanics, its JSON prompts, and the frozen v1 decisions against their recorded digests. See [V1.md](V1.md).
 
-Known gaps between this package and the private code sit outside the studied prompt and state surface: no prediction-awareness notice (reset refuses those conditions), no action feedback echo events, no JSON prompt format, no debrief prompts, a different default shuffle seed unless the caller passes the original seed context, and a new runtime checked offline only. The module map is in [provenance/PROVENANCE.md](provenance/PROVENANCE.md).
+Known gaps between this package and the private code sit outside the studied prompt and state surface: no prediction-awareness notice (reset refuses those conditions), no action feedback echo events in Commons v2, no JSON prompt format in Commons v2, no debrief prompts, a different default shuffle seed unless the caller passes the original seed context, and a new runtime checked offline only. The module map is in [provenance/PROVENANCE.md](provenance/PROVENANCE.md).
 
 ## What does not ship here
 
-Campaign drivers, forecast collection, peer-objective disclosure, transfer demonstrations and source banks, reasoning-trace reader views, probability-interface prompts, scoring, paper analysis, precheck sweeps and gate code stay in the private research code. A finite-horizon analysis oracle from that code also stays private. It was never part of the environment.
+Campaign drivers, forecast collection, peer-objective disclosure, transfer demonstrations and source banks, reasoning-trace reader views, probability-interface prompts, scoring, study analysis, precheck sweeps and gate code stay in the private research code. A finite-horizon analysis oracle from that code also stays private. It was never part of the environment.
